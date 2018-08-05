@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PutridParrot.RecordAndPlayback", "PutridParrot.RecordAndPlayback\PutridParrot.RecordAndPlayback.csproj", "{A734D6E1-6821-49AC-B1E5-A7F6E84BA3CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.RecordAndPlayback", "Tests.RecordAndPlayback\Tests.RecordAndPlayback.csproj", "{88394F5A-8FDD-43AF-8AA5-5E619FB875EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A734D6E1-6821-49AC-B1E5-A7F6E84BA3CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A734D6E1-6821-49AC-B1E5-A7F6E84BA3CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A734D6E1-6821-49AC-B1E5-A7F6E84BA3CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A734D6E1-6821-49AC-B1E5-A7F6E84BA3CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88394F5A-8FDD-43AF-8AA5-5E619FB875EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88394F5A-8FDD-43AF-8AA5-5E619FB875EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88394F5A-8FDD-43AF-8AA5-5E619FB875EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88394F5A-8FDD-43AF-8AA5-5E619FB875EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C94E99B-B037-4BC6-85C1-689F89C9C367}
+	EndGlobalSection
+EndGlobal

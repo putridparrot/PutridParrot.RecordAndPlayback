@@ -1,14 +1,16 @@
 # Record and Playback
 
- Based on ideas such as https://github.com/mleech/scotch. This library allows us
- to record interactions with methods and switch to replay these recorded sessions.
+[![Build status](https://ci.appveyor.com/api/projects/status/c1mx2s3gxgqwld4i?svg=true)](https://ci.appveyor.com/project/putridparrot/putridparrot-recordandplayback)
 
- The problem I had with the Scotch library was simply that it was tied too much to 
- a specific class so was not helpful in legacy code or in situations where I wanted 
- to use REST libraries or similar.
+Based on ideas such as https://github.com/mleech/scotch. This library allows us
+to record interactions with methods and switch to replay these recorded sessions.
 
- To use, we simply wrap our method calls within  the Recorder's Invoke method and 
- passing our method call as an Expression, for example
+The problem I had with the Scotch library was simply that it was tied too much to 
+a specific class so was not helpful in legacy code or in situations where I wanted 
+to use REST libraries or similar.
+
+To use, we simply wrap our method calls within  the Recorder's Invoke method and 
+passing our method call as an Expression, for example
 
  ```csharp
 var player = new Recorder(recorder);

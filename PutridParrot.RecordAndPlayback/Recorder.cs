@@ -14,17 +14,13 @@ public class Recorder : IRecorder
 
     public TResult? Invoke<TResult>(Expression<Func<TResult?>> expression, RecorderMode mode)
     {
-        switch (mode)
+        return mode switch
         {
-            case RecorderMode.Bypass:
-                return expression.Compile().Invoke();
-            case RecorderMode.Record:
-                return Record(expression);
-            case RecorderMode.Playback:
-                return Playback(expression);
-        }
-
-        return default;
+            RecorderMode.Bypass => expression.Compile().Invoke(),
+            RecorderMode.Record => Record(expression),
+            RecorderMode.Playback => Playback(expression),
+            _ => default
+        };
     }
 
     private TResult? Playback<TResult>(Expression<Func<TResult>> expression)
@@ -61,7 +57,7 @@ public class Recorder : IRecorder
         return result;
     }
 
-    private string? GetName<TResult>(Expression<Func<TResult>> expression)
+    private static string? GetName<TResult>(Expression<Func<TResult>> expression)
     {
         if (expression.Body is MethodCallExpression methodCallExpression)
         {
@@ -71,7 +67,7 @@ public class Recorder : IRecorder
         return null;
     }
 
-    private object? GetArgumentValue(Expression expression)
+    private static object? GetArgumentValue(Expression expression)
     {
         if (expression is ConstantExpression constExpression)
         {

@@ -19,7 +19,7 @@ public class InMemoryRecorderStorage : IRecorderStorage
 
     private Invocation? Find(Invocation invocationPattern)
     {
-        if (invocationPattern.Name != null)
+        if (!String.IsNullOrEmpty(invocationPattern.Name))
         {
             if (_dictionary.TryGetValue(invocationPattern.Name, out var invocationPatterns))
             {

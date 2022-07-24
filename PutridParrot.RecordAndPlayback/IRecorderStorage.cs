@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace PutridParrot.RecordAndPlayback;
 
-namespace PutridParrot.RecordAndPlayback
+public interface IRecorderStorage
 {
-    public interface IRecorderStorage
-    {
-        void Record(Invocation invocationPattern);
-        object Playback(Invocation invocationPattern);
-    }
+    void Record(Invocation invocationPattern);
+    object? Playback(Invocation invocationPattern);
 }

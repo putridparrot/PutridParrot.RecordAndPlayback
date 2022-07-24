@@ -1,92 +1,88 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace PutridParrot.RecordAndPlayback
+namespace PutridParrot.RecordAndPlayback;
+
+public class Recorder : IRecorder
 {
-    public class Recorder : IRecorder
+    private readonly IRecorderStorage? _recorder;
+
+    public Recorder(IRecorderStorage? recorder)
     {
-        private readonly IRecorderStorage _recorder;
+        _recorder = recorder;
+    }
 
-        public Recorder(IRecorderStorage recorder)
+    public TResult? Invoke<TResult>(Expression<Func<TResult?>> expression, RecorderMode mode)
+    {
+        switch (mode)
         {
-            _recorder = recorder;
+            case RecorderMode.Bypass:
+                return expression.Compile().Invoke();
+            case RecorderMode.Record:
+                return Record(expression);
+            case RecorderMode.Playback:
+                return Playback(expression);
         }
 
-        public TResult Invoke<TResult>(Expression<Func<TResult>> expression, RecorderMode mode)
+        return default;
+    }
+
+    private TResult? Playback<TResult>(Expression<Func<TResult>> expression)
+    {
+        var result = _recorder?.Playback(CreateInvocationPattern(expression));
+        return result != null ? (TResult)result : default;
+    }
+
+    private Invocation CreateInvocationPattern<TResult>(Expression<Func<TResult>> expression, object? result = null)
+    {
+        Argument[]? arguments = null;
+
+        if (expression.Body is MethodCallExpression methodCallExpression)
         {
-            switch (mode)
+            var numberOfArguments = methodCallExpression.Arguments.Count;
+            arguments = new Argument[numberOfArguments];
+
+            for (var i = 0; i < methodCallExpression.Arguments.Count; i++)
             {
-                case RecorderMode.Bypass:
-                    return expression.Compile().Invoke();
-                case RecorderMode.Record:
-                    return Record(expression);
-                case RecorderMode.Playback:
-                    return Playback(expression);
+                var argument = methodCallExpression.Arguments[i].Type;
+                arguments[i] = new Argument(argument, GetArgumentValue(methodCallExpression.Arguments[i]));
             }
-
-            return default(TResult);
         }
 
-        private TResult Playback<TResult>(Expression<Func<TResult>> expression)
+        return new Invocation(GetName(expression), arguments, result);
+    }
+
+    private TResult? Record<TResult>(Expression<Func<TResult?>> expression)
+    {
+        var result = expression.Compile().Invoke();
+
+        _recorder?.Record(CreateInvocationPattern(expression, result));
+
+        return result;
+    }
+
+    private string? GetName<TResult>(Expression<Func<TResult>> expression)
+    {
+        if (expression.Body is MethodCallExpression methodCallExpression)
         {
-            var result = _recorder?.Playback(CreateInvocationPattern(expression));
-            return (TResult)result;
+            var assemblyName = methodCallExpression.Method.DeclaringType?.Assembly.GetName().Name;
+            return $"{assemblyName}{methodCallExpression.Method.DeclaringType?.Name}.{methodCallExpression.Method.Name}";
         }
+        return null;
+    }
 
-        private Invocation CreateInvocationPattern<TResult>(Expression<Func<TResult>> expression, object result = null)
+    private object? GetArgumentValue(Expression expression)
+    {
+        if (expression is ConstantExpression constExpression)
         {
-            Argument[] arguments = null;
-
-            var methodCallExpression = expression.Body as MethodCallExpression;
-            if (methodCallExpression != null)
-            {
-                var numberOfArguments = methodCallExpression.Arguments.Count;
-                arguments = new Argument[numberOfArguments];
-
-                for (var i = 0; i < methodCallExpression.Arguments.Count; i++)
-                {
-                    var argument = methodCallExpression.Arguments[i].Type;
-                    arguments[i] = new Argument(argument, GetArgumentValue(methodCallExpression.Arguments[i]));
-                }
-            }
-
-            return new Invocation(GetName(expression), arguments, result);
+            return constExpression.Value;
         }
 
-        private TResult Record<TResult>(Expression<Func<TResult>> expression)
+        if (expression is MethodCallExpression methodCallExpression)
         {
-            var result = expression.Compile().Invoke();
-
-            _recorder?.Record(CreateInvocationPattern(expression, result));
-
-            return result;
+            return Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
         }
 
-        private string GetName<TResult>(Expression<Func<TResult>> expression)
-        {
-            var methodCallExpression = expression.Body as MethodCallExpression;
-            if (methodCallExpression != null)
-            {
-                var assemblyName = methodCallExpression.Method.DeclaringType.Assembly.GetName().Name;
-                return $"{assemblyName}{methodCallExpression.Method.DeclaringType.Name}.{methodCallExpression.Method.Name}";
-            }
-            return null;
-        }
-
-        private object GetArgumentValue(Expression expression)
-        {
-            var constExpression = expression as ConstantExpression;
-            if (constExpression != null)
-            {
-                return constExpression.Value;
-            }
-            var methodCallExpression = expression as MethodCallExpression;
-            if (methodCallExpression != null)
-            {
-                return Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
-            }
-
-            return null;
-        }
+        return null;
     }
 }

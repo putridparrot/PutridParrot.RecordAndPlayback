@@ -6,7 +6,7 @@ namespace PutridParrot.RecordAndPlayback;
 
 /// <summary>
 /// Simple, in memory implementation of an IRecorder.
-/// All data is lost when instance disposed.
+/// All data is lost when the instance is disposed.
 /// </summary>
 public class InMemoryRecorderStorage : IRecorderStorage
 {

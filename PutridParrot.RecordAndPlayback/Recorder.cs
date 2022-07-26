@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace PutridParrot.RecordAndPlayback;
 
+/// <summary>
+/// An implementation of the recorder interface.
+/// </summary>
 public class Recorder : IRecorder
 {
     private readonly IRecorderStorage? _recorder;
@@ -13,6 +16,16 @@ public class Recorder : IRecorder
         _recorder = recorder;
     }
 
+    /// <summary>
+    /// Invokes the expression using the supplied RecorderMode. For
+    /// Bypass we simply invoke the expression, for Record we record
+    /// and return the expression, for Playback we attempt to playback
+    /// an existing invoked expression.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="mode"></param>
+    /// <returns></returns>
     public TResult? Invoke<TResult>(Expression<Func<TResult?>> expression, RecorderMode mode)
     {
         return mode switch
@@ -37,6 +50,16 @@ public class Recorder : IRecorder
         return result != null ? (TResult)result : default;
     }
 
+    /// <summary>
+    /// Invokes the expression asynchronously using the supplied RecorderMode.
+    /// For Bypass we simply invoke the expression, for Record we record
+    /// and return the expression, for Playback we attempt to playback
+    /// an existing invoked expression.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="mode"></param>
+    /// <returns></returns>
     public async Task<TResult?> InvokeAsync<TResult>(Expression<Func<Task<TResult?>>> expression, RecorderMode mode)
     {
         return mode switch

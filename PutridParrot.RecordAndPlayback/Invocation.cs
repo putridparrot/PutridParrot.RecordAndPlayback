@@ -17,9 +17,9 @@ public class Invocation
         Result = result;
     }
 
-    public string? Name { get; set; }
-    public Argument[]? Arguments { get; set; }
-    public object? Result { get; set; }
+    public string? Name { get; }
+    public Argument[]? Arguments { get; }
+    public object? Result { get; }
 
     public bool Equals(Invocation invocation)
     {

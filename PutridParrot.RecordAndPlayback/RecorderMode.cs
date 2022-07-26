@@ -7,10 +7,16 @@
 /// </summary>
 public enum RecorderMode
 {
-    // Bypass recorder/player
+    /// <summary>
+    /// Bypass recorder/player
+    /// </summary>
     Bypass,
-    // Record mode, sends data to a recorder
+    /// <summary>
+    /// Record mode, sends data to a recorder
+    /// </summary>
     Record,
-    // Playback mode, replays data from the recorder
+    /// <summary>
+    /// Playback mode, replays data from the recorder
+    /// </summary>
     Playback
 }

@@ -2,15 +2,6 @@
 
 [![Build Status](https://github.com/putridparrot/PutridParrot.RecordAndPlayback/actions/workflows/build.yml/badge.svg)](https://github.com/putridparrot/PutridParrot.RecordAndPlayback/actions/workflows/build.yml)
 
-Based on ideas such as https://github.com/mleech/scotch. This library allows us
-to record interactions with methods and switch to replay these recorded sessions.
-
-_**Why not just use Scotch?**_
-
-_The problem I had with the Scotch library was simply that it was tied too much to 
-a specific class so was not quite so helpful in legacy code or in situations where I wanted 
-to use REST libraries or similar._
-
 ## Overview
 
 The original andprimary requirement for this application comes from situations where I'm working on the client code

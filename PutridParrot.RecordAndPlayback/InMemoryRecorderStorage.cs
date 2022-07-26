@@ -54,12 +54,7 @@ public class InMemoryRecorderStorage : IRecorderStorage
 
     public object? Playback(Invocation invocationPattern)
     {
-        var match = Find(invocationPattern);
-        if (match == null)
-        {
-            throw new NoRecordingExistsException();
-        }
-
+        var match = Find(invocationPattern) ?? throw new NoRecordingExistsException();
         return match.Result;
     }
 

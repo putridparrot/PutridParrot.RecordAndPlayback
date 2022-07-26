@@ -1,22 +1,31 @@
-﻿using System.IO;
-using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Tests.RecordAndPlayback;
 
+[ExcludeFromCodeCoverage]
 public class HttpResponseSample
 {
-    public string GetResponse(string requestUri, string operationType)
+    public string GetResponse(string requestUri, HttpMethod operationType)
     {
-        var webRequest = WebRequest.Create(requestUri) as HttpWebRequest;
-        if (webRequest == null)
-            throw new WebException($"Could not create a HttpWebRequest for requested resource '{requestUri}'");
+        var httpRequest = new HttpClient();
+        var httpRequestMessage = new HttpRequestMessage(operationType, requestUri);
 
-        webRequest.Method = operationType;
-
-        using (var httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
-        {
-            var stream = httpWebResponse.GetResponseStream();
-            return stream != null ? new StreamReader(stream).ReadToEnd() : string.Empty;
-        }
+        using var httpWebResponse = httpRequest.Send(httpRequestMessage);
+        var stream = httpWebResponse.Content.ReadAsStream();
+        return new StreamReader(stream).ReadToEnd();
     }
+
+    public async Task<string> GetResponseAsync(string requestUri, HttpMethod operationType)
+    {
+        var httpRequest = new HttpClient();
+        var httpRequestMessage = new HttpRequestMessage(operationType, requestUri);
+
+        using var httpWebResponse = await httpRequest.SendAsync(httpRequestMessage);
+        var stream = await httpWebResponse.Content.ReadAsStreamAsync();
+        return await new StreamReader(stream).ReadToEndAsync();
+    }
+
 }

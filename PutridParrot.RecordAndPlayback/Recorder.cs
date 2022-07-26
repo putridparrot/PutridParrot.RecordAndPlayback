@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace PutridParrot.RecordAndPlayback;
 
@@ -23,10 +24,41 @@ public class Recorder : IRecorder
         };
     }
 
+    private TResult? Record<TResult>(Expression<Func<TResult?>> expression)
+    {
+        var result = expression.Compile().Invoke();
+        _recorder?.Record(CreateInvocationPattern(expression, result));
+        return result;
+    }
+
     private TResult? Playback<TResult>(Expression<Func<TResult>> expression)
     {
         var result = _recorder?.Playback(CreateInvocationPattern(expression));
         return result != null ? (TResult)result : default;
+    }
+
+    public async Task<TResult?> InvokeAsync<TResult>(Expression<Func<Task<TResult?>>> expression, RecorderMode mode)
+    {
+        return mode switch
+        {
+            RecorderMode.Bypass => await expression.Compile().Invoke(),
+            RecorderMode.Record => await RecordAsync(expression),
+            RecorderMode.Playback => await PlaybackAsync(expression),
+            _ => default
+        };
+    }
+
+    private async Task<TResult?> RecordAsync<TResult>(Expression<Func<Task<TResult?>>> expression)
+    {
+        var result = await expression.Compile().Invoke();
+        _recorder?.Record(CreateInvocationPattern(expression, result));
+        return result;
+    }
+
+    private Task<TResult?> PlaybackAsync<TResult>(Expression<Func<Task<TResult>>> expression)
+    {
+        var result = _recorder?.Playback(CreateInvocationPattern(expression));
+        return Task.FromResult(result != null ? (TResult)result : default);
     }
 
     private Invocation CreateInvocationPattern<TResult>(Expression<Func<TResult>> expression, object? result = null)
@@ -38,7 +70,7 @@ public class Recorder : IRecorder
             var numberOfArguments = methodCallExpression.Arguments.Count;
             arguments = new Argument[numberOfArguments];
 
-            for (var i = 0; i < methodCallExpression.Arguments.Count; i++)
+            for (var i = 0; i < numberOfArguments; i++)
             {
                 var argument = methodCallExpression.Arguments[i].Type;
                 arguments[i] = new Argument(argument, GetArgumentValue(methodCallExpression.Arguments[i]));
@@ -46,15 +78,6 @@ public class Recorder : IRecorder
         }
 
         return new Invocation(GetName(expression), arguments, result);
-    }
-
-    private TResult? Record<TResult>(Expression<Func<TResult?>> expression)
-    {
-        var result = expression.Compile().Invoke();
-
-        _recorder?.Record(CreateInvocationPattern(expression, result));
-
-        return result;
     }
 
     private static string? GetName<TResult>(Expression<Func<TResult>> expression)

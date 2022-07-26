@@ -11,22 +11,27 @@ namespace PutridParrot.RecordAndPlayback;
 /// </summary>
 public class FileRecorderStorage : IRecorderStorage
 {
+    private const string DefaultFilename = "recording.json";
+
     private readonly string _rootFolder;
+    private readonly string _fileName;
     private Dictionary<string, List<Invocation>>? _dictionary;
 
-    public FileRecorderStorage(string rootFolder)
+    public FileRecorderStorage(string? rootFolder, string? fileName = null)
     {
-        _rootFolder = rootFolder;
+        _rootFolder = rootFolder ?? throw new ArgumentNullException(nameof(rootFolder));
+        _fileName = fileName ?? DefaultFilename;
         _dictionary = new Dictionary<string, List<Invocation>>();
     }
+
+    private string RecordingFile => $"{_rootFolder}{Path.DirectorySeparatorChar}{_fileName}";
 
     public void Load()
     {
         // simple version stores everything in a single file
-        var dataFile = $"{_rootFolder}{Path.DirectorySeparatorChar}recording.json";
-        if (File.Exists(dataFile))
+        if (File.Exists(RecordingFile))
         {
-            var json = File.ReadAllText(dataFile);
+            var json = File.ReadAllText(RecordingFile);
             if (!String.IsNullOrEmpty(json))
             {
                 _dictionary = JsonConvert.DeserializeObject<Dictionary<string, List<Invocation>>>(json);
@@ -36,8 +41,17 @@ public class FileRecorderStorage : IRecorderStorage
 
     public void Save()
     {
-        var dataFile = $"{_rootFolder}/recording.json";
-        File.WriteAllText(dataFile, JsonConvert.SerializeObject(_dictionary));
+        if (String.IsNullOrEmpty(_rootFolder))
+        {
+            return;
+        }
+
+        if (!Directory.Exists(_rootFolder))
+        {
+            Directory.CreateDirectory(_rootFolder);
+        }
+
+        File.WriteAllText(RecordingFile, JsonConvert.SerializeObject(_dictionary));
     }
 
     private Invocation? Find(Invocation invocationPattern)
@@ -82,12 +96,7 @@ public class FileRecorderStorage : IRecorderStorage
 
     public object? Playback(Invocation invocationPattern)
     {
-        var match = Find(invocationPattern);
-        if (match == null)
-        {
-            throw new NoRecordingExistsException();
-        }
-
+        var match = Find(invocationPattern) ?? throw new NoRecordingExistsException();
         return match.Result;
     }
 

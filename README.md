@@ -1,6 +1,6 @@
 # Record and Playback
 
-[![Build status](https://ci.appveyor.com/api/projects/status/c1mx2s3gxgqwld4i?svg=true)](https://ci.appveyor.com/project/putridparrot/putridparrot-recordandplayback)
+[![Build Status](https://github.com/putridparrot/PutridParrot.RecordAndPlayback/actions/workflows/build.yml/badge.svg)](https://github.com/putridparrot/PutridParrot.RecordAndPlayback/actions/workflows/build.yml)
 
 Based on ideas such as https://github.com/mleech/scotch. This library allows us
 to record interactions with methods and switch to replay these recorded sessions.

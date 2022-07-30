@@ -12,6 +12,9 @@ public class InMemoryRecorderStorage : IRecorderStorage
 {
     private readonly Dictionary<string, List<Invocation>> _dictionary;
 
+    /// <summary>
+    /// Creates an instance of an InMemoryRecorderStorage
+    /// </summary>
     public InMemoryRecorderStorage()
     {
         _dictionary = new Dictionary<string, List<Invocation>>();
@@ -31,6 +34,10 @@ public class InMemoryRecorderStorage : IRecorderStorage
         return null;
     }
 
+    /// <summary>
+    /// Record the Invocation
+    /// </summary>
+    /// <param name="invocationPattern"></param>
     public void Record(Invocation invocationPattern)
     {
         if (!String.IsNullOrEmpty(invocationPattern.Name))
@@ -52,12 +59,23 @@ public class InMemoryRecorderStorage : IRecorderStorage
         }
     }
 
+    /// <summary>
+    /// Playback the supplied Invocation pattern
+    /// </summary>
+    /// <param name="invocationPattern"></param>
+    /// <returns></returns>
+    /// <exception cref="NoRecordingExistsException"></exception>
     public object? Playback(Invocation invocationPattern)
     {
         var match = Find(invocationPattern) ?? throw new NoRecordingExistsException();
         return match.Result;
     }
 
-    public List<Invocation>? this[string key] => 
+    /// <summary>
+    /// Gets the Invocation list for the supplied key
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public IList<Invocation>? this[string key] => 
         _dictionary.TryGetValue(key, out var value) ? value : null;
 }

@@ -5,12 +5,16 @@ using System.Threading.Tasks;
 namespace PutridParrot.RecordAndPlayback;
 
 /// <summary>
-/// An implementation of the recorder interface.
+/// Recorder allows the recording and playback of functions/expressions
 /// </summary>
 public class Recorder : IRecorder
 {
     private readonly IRecorderStorage? _recorder;
 
+    /// <summary>
+    /// Creates a Recorder with the supplied storage mechanism
+    /// </summary>
+    /// <param name="recorder"></param>
     public Recorder(IRecorderStorage? recorder)
     {
         _recorder = recorder;

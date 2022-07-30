@@ -9,16 +9,16 @@
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<RepositoryUrl>https://github.com/putridparrot/PutridParrot.RecordAndPlayback.git</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
-	<!--<PackageIcon>PutridParrot.RecordAndPlayback.png</PackageIcon>-->
+	<PackageIcon>PutridParrot.RecordAndPlayback.png</PackageIcon>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<AssemblyVersion>0.1.0.0</AssemblyVersion>
 	<FileVersion>0.1.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-	  <!--<None Include="..\PutridParrot.RecordAndPlayback.png">
+	  <None Include="..\PutridParrot.RecordAndPlayback.png">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
-	  </None>-->
+	  </None>
 	  <None Include="..\README.md">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>

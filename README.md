@@ -4,7 +4,7 @@
 
 ## Overview
 
-The original andprimary requirement for this application comes from situations where I'm working on the client code
+The original and primary requirement for this application comes from situations where I'm working on the client code
 to an application and either the server may be offline often or the environment flaky or other situations
 where I ultimately want more control over the supply of data to my application. 
 
@@ -50,7 +50,11 @@ var response = recorder.Invoke(
     () => http.GetResponse("http://mydataserver/getdata", HttpMethod.Get),
         RecorderMode.Playback);
 ```
+The RecorderMode can also be switched ByPass mode which essentially just invokes the expression and does not record or
+offer playback, so essentially is just the method call. 
 
+_Note: If you're intending to always call your code with ByPass, ofcourse it's suggested that you call the code directly. 
+ByPass is available if you're using some "switch" in your application to turn on/off Record etc._
 
 **This is very much in an "alpha" state and works in very specific scenarios, but I'll update 
 as and when/if needed.**

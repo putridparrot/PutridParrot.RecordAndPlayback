@@ -9,15 +9,20 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: Build on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        tools-version: [6.0.x]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: ${{ matrix.tools-version }}
+
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -26,6 +31,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
     - name: Create Package
       run: dotnet pack --configuration Release
+
     - name: Create Artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -33,8 +39,8 @@ jobs:
         path: /home/runner/work/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/bin/Release/PutridParrot.RecordAndPlayback.*.nupkg
 #    - name: Publish to Nuget
 #      run: dotnet nuget push /home/runner/work/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
-#    - name: Publish to GitHub
-#      run: |
-#        dotnet nuget add source https://nuget.pkg.github.com/putridparrot/index.json -n github -u putridparrot -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
-#        dotnet nuget push /home/runner/work/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.GITHUB_TOKEN}} --source "github"
+    - name: Publish to GitHub
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/putridparrot/index.json -n github -u putridparrot -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+        dotnet nuget push /home/runner/work/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/PutridParrot.RecordAndPlayback/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.GITHUB_TOKEN}} --source "github"
       
